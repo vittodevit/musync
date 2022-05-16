@@ -1,6 +1,8 @@
 import click
 import json
+import os
 import spotipy
+import glob
 from spotipy.oauth2 import SpotifyClientCredentials
 import f_spoti
 import f_ytmusic
@@ -8,6 +10,7 @@ import f_ytmusic
 
 @click.command()
 @click.argument('configfile', type=click.Path(exists=True))
+# TODO: musync batch / musync get (differentiate login and not)
 def main(configfile):
     config = {}
 
@@ -55,6 +58,34 @@ def main(configfile):
             )
 
             click.echo("        Found track: https://www.youtube.com/watch?v=" + yt_id)
+
+            artistdir = ""
+            #  TODO: CHECK IF THIS CODE WORKS
+
+            # check if artist folder exists, otherwise create it
+            if len(song["track"]["album"]["artists"]) > 1:
+                if not os.path.isdir("Various Artists"):
+                    os.mkdir("Various Artists")
+                    artistdir = "Various Artists"
+            else:
+                if not os.path.isdir(song["track"]["album"]["artists"][0]["name"]):
+                    os.mkdir(song["track"]["album"]["artists"][0]["name"])
+                    artistdir = song["track"]["album"]["artists"][0]["name"]
+
+            albumdir = os.path.join(artistdir, song["track"]["album"]["name"])
+
+            # check if album folder exists, otherwise create it
+            if not os.path.isdir(albumdir):
+                os.mkdir(albumdir)
+
+            # check if file is already downloaded
+            filename = song["track"]["track_number"] + " " + song["track"]["name"]
+
+            if glob.glob(os.path.join(albumdir, filename + ".*")):
+                click.echo("        Song already downloaded! Skipping.")
+            else:
+                print()
+                #  TODO: download from yt, metadata application, move file
 
 
 if __name__ == '__main__':

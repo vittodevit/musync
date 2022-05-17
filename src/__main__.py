@@ -58,19 +58,17 @@ def main(configfile):
             )
 
             click.echo("        Found track: https://www.youtube.com/watch?v=" + yt_id)
-
             artistdir = ""
-            #  TODO: CHECK IF THIS CODE WORKS
 
             # check if artist folder exists, otherwise create it
             if len(song["track"]["album"]["artists"]) > 1:
                 if not os.path.isdir("Various Artists"):
                     os.mkdir("Various Artists")
-                    artistdir = "Various Artists"
+                artistdir = "Various Artists"
             else:
                 if not os.path.isdir(song["track"]["album"]["artists"][0]["name"]):
                     os.mkdir(song["track"]["album"]["artists"][0]["name"])
-                    artistdir = song["track"]["album"]["artists"][0]["name"]
+                artistdir = song["track"]["album"]["artists"][0]["name"]
 
             albumdir = os.path.join(artistdir, song["track"]["album"]["name"])
 
@@ -79,13 +77,16 @@ def main(configfile):
                 os.mkdir(albumdir)
 
             # check if file is already downloaded
-            filename = song["track"]["track_number"] + " " + song["track"]["name"]
+            filename = str(song["track"]["track_number"]) + " " + song["track"]["name"]
 
-            if glob.glob(os.path.join(albumdir, filename + ".*")):
+            glob_check = glob.escape(os.path.join(albumdir, filename))
+            if glob.glob(glob_check + ".mp3"):
                 click.echo("        Song already downloaded! Skipping.")
             else:
-                print()
-                #  TODO: download from yt, metadata application, move file
+                click.echo("        Downloading song...")
+                complete_filename = os.path.join(albumdir, filename) + ".mp3"
+                f_ytmusic.download(yt_id, complete_filename)
+                #  TODO: metadata application, playlist creation
 
 
 if __name__ == '__main__':

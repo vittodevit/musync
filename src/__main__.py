@@ -1,9 +1,11 @@
-import click
 import json
 import os
-import spotipy
 import glob
+import spotipy
+import ffmpeg
+import click
 from spotipy.oauth2 import SpotifyClientCredentials
+from mutagen.mp4 import MP4
 import f_spoti
 import f_ytmusic
 
@@ -80,13 +82,28 @@ def main(configfile):
             filename = str(song["track"]["track_number"]) + " " + song["track"]["name"]
 
             glob_check = glob.escape(os.path.join(albumdir, filename))
-            if glob.glob(glob_check + ".mp3"):
+            if glob.glob(glob_check + ".m4a"):
                 click.echo("        Song already downloaded! Skipping.")
             else:
                 click.echo("        Downloading song...")
-                complete_filename = os.path.join(albumdir, filename) + ".mp3"
-                f_ytmusic.download(yt_id, complete_filename)
-                #  TODO: metadata application, playlist creation
+                filename_bc = os.path.join(albumdir, filename) + ".webm"
+                filename_ac = os.path.join(albumdir, filename) + ".m4a"
+                f_ytmusic.download(yt_id, filename_bc)
+
+                #  file conversion
+                ff_input = ffmpeg.input(filename_bc)
+                ff_audio = ff_input.audio
+                ff_out = ffmpeg.output(ff_audio, filename_ac, acodec="aac")
+                ffmpeg.run(ff_out)
+                os.unlink(filename_bc)
+
+                #  metadata application
+                tags = MP4(filename_ac).tags
+                tags["desc"] = "ciao"
+                tags.save(filename_ac)
+
+                #  TODO: playlist creation
+                print()
 
 
 if __name__ == '__main__':

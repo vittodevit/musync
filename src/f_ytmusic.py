@@ -58,11 +58,7 @@ def progress_hook(d):
 def download(video_id, savepath):
     ydl_opts = {
         'format': 'bestaudio/best',
-        'postprocessors': [{
-            'key': 'FFmpegExtractAudio',
-            'preferredcodec': 'mp3',
-            'preferredquality': '320',
-        }],
+        'noplaylist': True,
         'logger': YtdlLogger(),
         'progress_hooks': [progress_hook],
         'outtmpl': savepath,

@@ -5,7 +5,8 @@ import spotipy
 import ffmpeg
 import click
 from spotipy.oauth2 import SpotifyClientCredentials
-from mutagen.mp4 import MP4
+from mutagen.mp4 import MP4, MP4Cover
+from urllib import request
 import f_spoti
 import f_ytmusic
 
@@ -99,7 +100,36 @@ def main(configfile):
 
                 #  metadata application
                 tags = MP4(filename_ac).tags
-                tags["desc"] = "ciao"
+                tags["\xa9nam"] = song["track"]["name"]
+                tags["\xa9alb"] = song["track"]["album"]["name"]
+
+                i = 0
+                artists = ""
+                for artist in song["track"]["artists"]:
+                    if i != 0:
+                        artists = artists + ", "
+                    artists = artists + artist["name"]
+                    i = i + 1
+                tags["\xa9ART"] = artists
+
+                i = 0
+                albumartists = ""
+                for artist in song["track"]["album"]["artists"]:
+                    if i != 0:
+                        albumartists = albumartists + ", "
+                    albumartists = albumartists + artist["name"]
+                    i = i + 1
+                tags["aART"] = albumartists
+
+                tags["\xa9day"] = song["track"]["album"]["release_date"][-4]
+                tags["\xa9cmt"] = song["track"]["uri"]
+                tags["\xa9too"] = "vittodevit/musync with FFMpeg"
+                tags["trkn"] = [(song["track"]["track_number"], song["track"]["album"]["total_tracks"])]
+                tags["disk"] = [(1, 1)]
+
+                cover_image = request.urlopen(song["track"]["album"]["images"][0]["url"])
+                tags["covr"] = [MP4Cover(cover_image.read(), imageformat=MP4Cover.FORMAT_JPEG)]
+
                 tags.save(filename_ac)
 
                 #  TODO: playlist creation

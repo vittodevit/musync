@@ -1,5 +1,5 @@
 from ytmusicapi import YTMusic
-import youtube_dl
+import yt_dlp
 import sys
 
 yt = YTMusic()
@@ -63,5 +63,5 @@ def download(video_id, savepath):
         'progress_hooks': [progress_hook],
         'outtmpl': savepath,
     }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         ydl.download(['https://www.youtube.com/watch?v=' + video_id])

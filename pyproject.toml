@@ -1,0 +1,31 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "musync"
+version = "0.0.1"
+description = "Gets your music from Spotify and downloads it from Youtube Music"
+readme = "README.md"
+authors = [{ name = "Vittorio Lo Mele", email = "vittorio@mrbackslash.it" }]
+license = { file = "LICENSE" }
+classifiers = [
+    "License :: OSI Approved :: Apache 2.0 License",
+        "Programming Language :: Python :: 3.8",
+]
+keywords = ["music", "python", "spotify", "downloader"]
+dependencies = [
+    "spotipy",
+    "ffmpeg",
+    "click",
+    "mutagen",
+    "ytmusicapi",
+    "yt-dlp"
+]
+requires-python = ">=3.8"
+
+[project.urls]
+Homepage = "https://github.com/vittodevit/musync"
+
+[project.scripts]
+musync = "src.__main__:main"

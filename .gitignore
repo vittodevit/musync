@@ -1,0 +1,5 @@
+.cache
+dist
+venv
+dist
+musync.egg-info

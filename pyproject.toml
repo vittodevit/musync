@@ -10,8 +10,8 @@ readme = "README.md"
 authors = [{ name = "Vittorio Lo Mele", email = "vittorio@mrbackslash.it" }]
 license = { file = "LICENSE" }
 classifiers = [
-    "License :: OSI Approved :: Apache 2.0 License",
-        "Programming Language :: Python :: 3.8",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3.8",
 ]
 keywords = ["music", "python", "spotify", "downloader"]
 dependencies = [

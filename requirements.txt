@@ -40,7 +40,7 @@ requests==2.28.0
     #   ytmusicapi
 six==1.16.0
     # via spotipy
-spotipy==2.20.0
+spotipy==2.22.1
     # via musync (pyproject.toml)
 urllib3==1.26.9
     # via
